@@ -73,10 +73,20 @@ function DrawingGame() {
             if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
             if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
           } else if (mode === 'host') {
+            // Для ведущего синхронизируем только ответы команд
+            // currentWord не синхронизируем - это локальное поле для отображения после начала раунда
             if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
-            if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
-            if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
-            if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+            // Синхронизируем isPlaying и timeLeft только если игра уже идет
+            if (state.isPlaying !== undefined && state.isPlaying) {
+              setIsPlaying(state.isPlaying)
+            }
+            if (state.timeLeft !== undefined && state.isPlaying) {
+              setTimeLeft(state.timeLeft)
+            }
+            // currentWord синхронизируем только если игра идет (для отображения)
+            if (state.currentWord && state.isPlaying) {
+              setCurrentWord(state.currentWord)
+            }
           }
         }
       } catch (error) {
@@ -98,10 +108,9 @@ function DrawingGame() {
         if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
         if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
       } else if (mode === 'host') {
+        // Для ведущего синхронизируем только ответы команд при первой загрузке
         if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
-        if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
-        if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
-        if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+        // Не перезаписываем локальное состояние ведущего
       }
     })
 
@@ -179,6 +188,7 @@ function DrawingGame() {
   const endRound = async () => {
     setIsPlaying(false)
     setCurrentWord('')
+    setCustomWord('') // Очищаем поле ввода
     await updateGameState(roomCode, {
       isPlaying: false,
       currentWord: '',
@@ -189,6 +199,7 @@ function DrawingGame() {
   const nextRound = async () => {
     setRound(round + 1)
     setCurrentWord('')
+    setCustomWord('') // Очищаем поле ввода
     setIsPlaying(false)
     setTeamAnswers({})
     await updateGameState(roomCode, {
