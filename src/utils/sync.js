@@ -2,7 +2,7 @@
 // Работает через простой API - просто копируем и используем!
 
 const JSONBIN_API = 'https://api.jsonbin.io/v3/b'
-const API_KEY = undefined // Замените на свой ключ (см. инструкцию ниже)
+const API_KEY = '$2a$10$JP40f4..vIc7UwYk0WoB0OkWQzfEB8yr8.Ig2IfC/WkvHRyCdOKv.' // Замените на свой ключ (см. инструкцию ниже)
 
 // Для получения ключа:
 // 1. Зайдите на jsonbin.io
