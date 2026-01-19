@@ -39,24 +39,42 @@ function DrawingGame() {
     return Math.random().toString(36).substring(2, 8).toUpperCase()
   }
 
+  // Инициализация комнаты для ведущего
+  useEffect(() => {
+    if (mode === 'host') {
+      // Создаем начальное состояние комнаты
+      updateGameState(roomCode, {
+        isPlaying: false,
+        currentWord: '',
+        timeLeft: 0,
+        teamAnswers: {}
+      }).catch(err => console.error('Failed to init room:', err))
+    }
+  }, [roomCode, mode])
+
   // Синхронизация через polling каждые 500ms
   useEffect(() => {
     const syncInterval = setInterval(async () => {
       try {
         const state = await getGameState(roomCode)
         
-        if (state.lastUpdate && state.lastUpdate !== lastUpdateRef.current) {
-          lastUpdateRef.current = state.lastUpdate
+        // Обновляем состояние если есть изменения или это первая загрузка
+        const hasUpdates = !state.lastUpdate || state.lastUpdate !== lastUpdateRef.current
+        
+        if (hasUpdates) {
+          if (state.lastUpdate) {
+            lastUpdateRef.current = state.lastUpdate
+          }
           setIsConnected(true)
           
           if (mode === 'player') {
-            if (state.currentWord) setCurrentWord(state.currentWord)
+            if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
             if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
             if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
-            if (state.teamAnswers) setTeamAnswers(state.teamAnswers)
+            if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
           } else if (mode === 'host') {
-            if (state.teamAnswers) setTeamAnswers(state.teamAnswers)
-            if (state.currentWord) setCurrentWord(state.currentWord)
+            if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
+            if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
             if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
             if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
           }
@@ -66,6 +84,26 @@ function DrawingGame() {
         setIsConnected(false)
       }
     }, 500) // Проверяем каждые 500ms
+
+    // Первая загрузка сразу
+    getGameState(roomCode).then(state => {
+      if (state.lastUpdate) {
+        lastUpdateRef.current = state.lastUpdate
+      }
+      setIsConnected(true)
+      
+      if (mode === 'player') {
+        if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
+        if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
+        if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+        if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
+      } else if (mode === 'host') {
+        if (state.teamAnswers !== undefined) setTeamAnswers(state.teamAnswers || {})
+        if (state.currentWord !== undefined) setCurrentWord(state.currentWord || '')
+        if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
+        if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+      }
+    })
 
     return () => clearInterval(syncInterval)
   }, [roomCode, mode])
@@ -303,6 +341,14 @@ function DrawingGame() {
             <h2>Ожидание начала раунда...</h2>
             <p>Вы играете за команду: <strong>{selectedTeam}</strong></p>
             <p>Ведущий скоро начнет игру</p>
+            {!isConnected && (
+              <p style={{ color: '#f44336', marginTop: '10px' }}>
+                ⚠️ Проблема с подключением. Проверьте код комнаты.
+              </p>
+            )}
+            <p style={{ fontSize: '0.9em', color: '#999', marginTop: '10px' }}>
+              Комната: {roomCode} | Статус: {isConnected ? '🟢 Подключено' : '🔴 Не подключено'}
+            </p>
           </div>
         )}
 
