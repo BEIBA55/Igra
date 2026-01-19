@@ -10,6 +10,117 @@
   z-index: 1000;
 }
 
+/* Кнопка для открытия табло на мобильных */
+.scoreboard-toggle-btn {
+  display: none;
+  position: fixed;
+  top: 15px;
+  right: 15px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  padding: 12px 20px;
+  font-size: 1em;
+  font-weight: bold;
+  cursor: pointer;
+  z-index: 999;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.3);
+  transition: all 0.3s;
+}
+
+.scoreboard-toggle-btn:active {
+  transform: scale(0.95);
+}
+
+/* Модальное окно табло */
+.scoreboard-overlay {
+  display: none;
+  position: fixed;
+  top: 0;
+  left: 0;
+  right: 0;
+  bottom: 0;
+  background: rgba(0, 0, 0, 0.5);
+  z-index: 2000;
+}
+
+.scoreboard-overlay.show {
+  display: flex;
+  align-items: flex-start;
+  justify-content: center;
+  padding: 20px;
+  animation: fadeIn 0.3s ease;
+}
+
+.scoreboard-modal {
+  background: white;
+  border-radius: 20px;
+  padding: 25px;
+  max-width: 90%;
+  max-height: 80vh;
+  overflow-y: auto;
+  box-shadow: 0 8px 32px rgba(0, 0, 0, 0.3);
+  animation: slideUp 0.3s ease;
+  position: relative;
+}
+
+.scoreboard-header {
+  display: flex;
+  justify-content: space-between;
+  align-items: center;
+  margin-bottom: 20px;
+  padding-bottom: 15px;
+  border-bottom: 2px solid #e0e0e0;
+}
+
+.scoreboard-header h2 {
+  margin: 0;
+  color: #333;
+  font-size: 1.5em;
+}
+
+.scoreboard-close-btn {
+  background: #f44336;
+  color: white;
+  border: none;
+  border-radius: 50%;
+  width: 35px;
+  height: 35px;
+  font-size: 1.2em;
+  cursor: pointer;
+  display: flex;
+  align-items: center;
+  justify-content: center;
+  transition: all 0.3s;
+  flex-shrink: 0;
+}
+
+.scoreboard-close-btn:active {
+  background: #d32f2f;
+  transform: scale(0.9);
+}
+
+@keyframes fadeIn {
+  from {
+    opacity: 0;
+  }
+  to {
+    opacity: 1;
+  }
+}
+
+@keyframes slideUp {
+  from {
+    transform: translateY(50px);
+    opacity: 0;
+  }
+  to {
+    transform: translateY(0);
+    opacity: 1;
+  }
+}
+
 .scoreboard h2 {
   margin-bottom: 15px;
   color: #333;
@@ -53,29 +164,38 @@
 
 /* Мобильная версия */
 @media (max-width: 768px) {
-  .scoreboard {
-    position: sticky;
-    top: 0;
-    right: 0;
-    left: 0;
-    margin-bottom: 15px;
-    border-radius: 12px;
-    padding: 15px;
-    z-index: 100;
-    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  /* Скрываем обычное табло на мобильных */
+  .scoreboard-desktop {
+    display: none;
   }
 
-  .scoreboard h2 {
-    font-size: 1.2em;
-    margin-bottom: 12px;
+  /* Показываем кнопку для открытия */
+  .scoreboard-toggle-btn {
+    display: block;
+  }
+
+  /* Модальное окно на мобильных */
+  .scoreboard-overlay.show {
+    padding: 20px;
+  }
+
+  .scoreboard-modal {
+    margin-top: 60px;
+    width: 100%;
+    max-width: 400px;
+    max-height: calc(100vh - 100px);
+  }
+
+  .scoreboard-header h2 {
+    font-size: 1.3em;
   }
 
   .scoreboard-list {
-    gap: 8px;
+    gap: 10px;
   }
 
   .score-item {
-    padding: 10px 12px;
+    padding: 12px 15px;
   }
 
   .team-name {
@@ -89,18 +209,31 @@
 
 /* Очень маленькие экраны */
 @media (max-width: 480px) {
-  .scoreboard {
-    padding: 12px;
-    margin-bottom: 10px;
+  .scoreboard-toggle-btn {
+    top: 10px;
+    right: 10px;
+    padding: 10px 16px;
+    font-size: 0.9em;
   }
 
-  .scoreboard h2 {
-    font-size: 1.1em;
-    margin-bottom: 10px;
+  .scoreboard-modal {
+    padding: 20px;
+    margin-top: 50px;
+    max-height: calc(100vh - 80px);
+  }
+
+  .scoreboard-header h2 {
+    font-size: 1.2em;
+  }
+
+  .scoreboard-close-btn {
+    width: 30px;
+    height: 30px;
+    font-size: 1em;
   }
 
   .score-item {
-    padding: 8px 10px;
+    padding: 10px 12px;
   }
 
   .team-name {
