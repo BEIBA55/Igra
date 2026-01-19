@@ -649,6 +649,55 @@
   background: #ffebee;
 }
 
+.team-selection-screen {
+  text-align: center;
+  padding: 40px 20px;
+}
+
+.team-selection-screen h2 {
+  color: #333;
+  font-size: 2em;
+  margin-bottom: 10px;
+}
+
+.team-selection-screen p {
+  color: #666;
+  font-size: 1.2em;
+  margin-bottom: 30px;
+}
+
+.teams-grid {
+  display: grid;
+  grid-template-columns: repeat(auto-fill, minmax(150px, 1fr));
+  gap: 15px;
+  max-width: 800px;
+  margin: 0 auto;
+}
+
+.team-select-btn {
+  padding: 20px;
+  background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
+  color: white;
+  border: none;
+  border-radius: 12px;
+  font-size: 1.2em;
+  font-weight: bold;
+  cursor: pointer;
+  transition: all 0.3s;
+  box-shadow: 0 4px 15px rgba(0, 0, 0, 0.2);
+}
+
+.team-select-btn:hover {
+  transform: translateY(-3px);
+  box-shadow: 0 6px 20px rgba(0, 0, 0, 0.3);
+}
+
+.player-team-info {
+  margin-top: 15px;
+  font-size: 1.1em;
+  opacity: 0.9;
+}
+
 @media (max-width: 768px) {
   .word-text {
     font-size: 2.5em;

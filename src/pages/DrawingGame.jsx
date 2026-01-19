@@ -16,10 +16,23 @@ function DrawingGame() {
   const [timeLeft, setTimeLeft] = useState(0)
   const [isPlaying, setIsPlaying] = useState(false)
   const [teamAnswers, setTeamAnswers] = useState({})
-  const [selectedTeam, setSelectedTeam] = useState('')
+  const [selectedTeam, setSelectedTeam] = useState(() => {
+    // Загружаем выбранную команду из localStorage для этой комнаты
+    if (mode === 'player') {
+      return localStorage.getItem(`team_${roomCode}`) || ''
+    }
+    return ''
+  })
   const [playerAnswer, setPlayerAnswer] = useState('')
   const [round, setRound] = useState(1)
   const [isConnected, setIsConnected] = useState(true)
+  const [hasSelectedTeam, setHasSelectedTeam] = useState(() => {
+    // Проверяем, выбрал ли игрок команду
+    if (mode === 'player') {
+      return !!localStorage.getItem(`team_${roomCode}`)
+    }
+    return true
+  })
   const lastUpdateRef = useRef(0)
 
   function generateRoomCode() {
@@ -89,6 +102,12 @@ function DrawingGame() {
       timeLeft: 90,
       teamAnswers: {}
     })
+  }
+
+  const handleTeamSelect = (team) => {
+    setSelectedTeam(team)
+    localStorage.setItem(`team_${roomCode}`, team)
+    setHasSelectedTeam(true)
   }
 
   const handlePlayerSubmit = async () => {
@@ -261,32 +280,40 @@ function DrawingGame() {
           )}
         </div>
 
-        {!isPlaying && (
+        {!hasSelectedTeam && (
+          <div className="team-selection-screen">
+            <h2>Выберите вашу команду</h2>
+            <p>Выберите команду для участия в игре</p>
+            <div className="teams-grid">
+              {teams.map(team => (
+                <button
+                  key={team}
+                  onClick={() => handleTeamSelect(team)}
+                  className="team-select-btn"
+                >
+                  {team}
+                </button>
+              ))}
+            </div>
+          </div>
+        )}
+
+        {hasSelectedTeam && !isPlaying && (
           <div className="waiting-screen">
             <h2>Ожидание начала раунда...</h2>
+            <p>Вы играете за команду: <strong>{selectedTeam}</strong></p>
             <p>Ведущий скоро начнет игру</p>
           </div>
         )}
 
-        {isPlaying && (
+        {hasSelectedTeam && isPlaying && (
           <div className="player-section">
             <div className="drawing-prompt">
               <h2>🎨 Что рисует ведущий?</h2>
+              <p className="player-team-info">Вы играете за: <strong>{selectedTeam}</strong></p>
             </div>
 
             <div className="answer-form">
-              <label>Выберите вашу команду:</label>
-              <select
-                value={selectedTeam}
-                onChange={(e) => setSelectedTeam(e.target.value)}
-                className="team-select"
-              >
-                <option value="">Выберите команду</option>
-                {teams.map(team => (
-                  <option key={team} value={team}>{team}</option>
-                ))}
-              </select>
-
               <label>Ваш ответ:</label>
               <input
                 type="text"
@@ -300,7 +327,7 @@ function DrawingGame() {
               <button
                 onClick={handlePlayerSubmit}
                 className="submit-btn"
-                disabled={!selectedTeam || !playerAnswer.trim()}
+                disabled={!playerAnswer.trim()}
               >
                 Отправить ответ
               </button>
