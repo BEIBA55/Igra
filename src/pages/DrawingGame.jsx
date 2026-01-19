@@ -1,14 +1,13 @@
-import { useState, useEffect } from 'react'
+import { useState, useEffect, useRef } from 'react'
 import { useNavigate, useSearchParams } from 'react-router-dom'
 import { useGame } from '../context/GameContext'
+import { getGameState, updateGameState } from '../utils/sync'
 import './DrawingGame.css'
-
-// Исправляем маршрут для игроков
 
 function DrawingGame() {
   const navigate = useNavigate()
   const [searchParams] = useSearchParams()
-  const mode = searchParams.get('mode') || 'host' // 'host' или 'player'
+  const mode = searchParams.get('mode') || 'host'
   const roomCode = searchParams.get('room') || generateRoomCode()
   
   const { teams, addScore } = useGame()
@@ -20,22 +19,40 @@ function DrawingGame() {
   const [selectedTeam, setSelectedTeam] = useState('')
   const [playerAnswer, setPlayerAnswer] = useState('')
   const [round, setRound] = useState(1)
+  const [isConnected, setIsConnected] = useState(true)
+  const lastUpdateRef = useRef(0)
 
-  // Синхронизация через localStorage
+  function generateRoomCode() {
+    return Math.random().toString(36).substring(2, 8).toUpperCase()
+  }
+
+  // Синхронизация через polling каждые 500ms
   useEffect(() => {
-    const syncInterval = setInterval(() => {
-      const gameState = localStorage.getItem(`game_${roomCode}`)
-      if (gameState) {
-        const state = JSON.parse(gameState)
-        if (mode === 'player') {
-          setCurrentWord(state.currentWord || '')
-          setIsPlaying(state.isPlaying || false)
-          setTimeLeft(state.timeLeft || 0)
-        } else {
-          setTeamAnswers(state.teamAnswers || {})
+    const syncInterval = setInterval(async () => {
+      try {
+        const state = await getGameState(roomCode)
+        
+        if (state.lastUpdate && state.lastUpdate !== lastUpdateRef.current) {
+          lastUpdateRef.current = state.lastUpdate
+          setIsConnected(true)
+          
+          if (mode === 'player') {
+            if (state.currentWord) setCurrentWord(state.currentWord)
+            if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
+            if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+            if (state.teamAnswers) setTeamAnswers(state.teamAnswers)
+          } else if (mode === 'host') {
+            if (state.teamAnswers) setTeamAnswers(state.teamAnswers)
+            if (state.currentWord) setCurrentWord(state.currentWord)
+            if (state.isPlaying !== undefined) setIsPlaying(state.isPlaying)
+            if (state.timeLeft !== undefined) setTimeLeft(state.timeLeft)
+          }
         }
+      } catch (error) {
+        console.error('Sync error:', error)
+        setIsConnected(false)
       }
-    }, 1000)
+    }, 500) // Проверяем каждые 500ms
 
     return () => clearInterval(syncInterval)
   }, [roomCode, mode])
@@ -46,27 +63,17 @@ function DrawingGame() {
       const timer = setTimeout(() => {
         const newTime = timeLeft - 1
         setTimeLeft(newTime)
-        updateGameState({ timeLeft: newTime })
+        updateGameState(roomCode, { timeLeft: newTime })
         if (newTime === 0) {
           setIsPlaying(false)
-          updateGameState({ isPlaying: false })
+          updateGameState(roomCode, { isPlaying: false })
         }
       }, 1000)
       return () => clearTimeout(timer)
     }
-  }, [timeLeft, isPlaying, mode])
+  }, [timeLeft, isPlaying, mode, roomCode])
 
-  function generateRoomCode() {
-    return Math.random().toString(36).substring(2, 8).toUpperCase()
-  }
-
-  function updateGameState(updates) {
-    const currentState = JSON.parse(localStorage.getItem(`game_${roomCode}`) || '{}')
-    const newState = { ...currentState, ...updates }
-    localStorage.setItem(`game_${roomCode}`, JSON.stringify(newState))
-  }
-
-  const startRound = (word) => {
+  const startRound = async (word) => {
     const wordToUse = word || customWord
     if (!wordToUse.trim()) return
 
@@ -76,7 +83,7 @@ function DrawingGame() {
     setTeamAnswers({})
     setCustomWord('')
     
-    updateGameState({
+    await updateGameState(roomCode, {
       currentWord: wordToUse,
       isPlaying: true,
       timeLeft: 90,
@@ -84,49 +91,50 @@ function DrawingGame() {
     })
   }
 
-  const handlePlayerSubmit = () => {
+  const handlePlayerSubmit = async () => {
     if (!selectedTeam || !playerAnswer.trim()) return
 
-    const currentState = JSON.parse(localStorage.getItem(`game_${roomCode}`) || '{}')
-    const answers = currentState.teamAnswers || {}
-    answers[selectedTeam] = playerAnswer.trim()
+    const currentState = await getGameState(roomCode)
+    const answers = { ...(currentState.teamAnswers || {}), [selectedTeam]: playerAnswer.trim() }
     
-    updateGameState({ teamAnswers: answers })
+    await updateGameState(roomCode, { teamAnswers: answers })
     setTeamAnswers(answers)
     setPlayerAnswer('')
   }
 
-  const handleAcceptAnswer = (teamName) => {
-    addScore(teamName, 10) // Можно сделать разные очки
-    const newAnswers = { ...teamAnswers }
+  const handleAcceptAnswer = async (teamName) => {
+    addScore(teamName, 10)
+    const currentState = await getGameState(roomCode)
+    const newAnswers = { ...(currentState.teamAnswers || {}) }
     delete newAnswers[teamName]
     setTeamAnswers(newAnswers)
-    updateGameState({ teamAnswers: newAnswers })
+    await updateGameState(roomCode, { teamAnswers: newAnswers })
   }
 
-  const handleRejectAnswer = (teamName) => {
-    const newAnswers = { ...teamAnswers }
+  const handleRejectAnswer = async (teamName) => {
+    const currentState = await getGameState(roomCode)
+    const newAnswers = { ...(currentState.teamAnswers || {}) }
     delete newAnswers[teamName]
     setTeamAnswers(newAnswers)
-    updateGameState({ teamAnswers: newAnswers })
+    await updateGameState(roomCode, { teamAnswers: newAnswers })
   }
 
-  const endRound = () => {
+  const endRound = async () => {
     setIsPlaying(false)
     setCurrentWord('')
-    updateGameState({
+    await updateGameState(roomCode, {
       isPlaying: false,
       currentWord: '',
       teamAnswers: {}
     })
   }
 
-  const nextRound = () => {
+  const nextRound = async () => {
     setRound(round + 1)
     setCurrentWord('')
     setIsPlaying(false)
     setTeamAnswers({})
-    updateGameState({
+    await updateGameState(roomCode, {
       currentWord: '',
       isPlaying: false,
       teamAnswers: {},
@@ -144,6 +152,9 @@ function DrawingGame() {
             <div className="room-info">
               <h2>Комната: <span className="room-code">{roomCode}</span></h2>
               <p>Покажите этот код игрокам</p>
+              <div className={`connection-status ${isConnected ? 'connected' : 'disconnected'}`}>
+                {isConnected ? '🟢 Подключено' : '🔴 Не подключено'}
+              </div>
             </div>
             {isPlaying && (
               <div className="timer" style={{ color: timeLeft <= 15 ? '#f44336' : '#333' }}>
@@ -239,6 +250,9 @@ function DrawingGame() {
           <button onClick={() => navigate('/drawing')} className="back-btn">← Назад</button>
           <div className="room-info">
             <h2>Комната: <span className="room-code">{roomCode}</span></h2>
+            <div className={`connection-status ${isConnected ? 'connected' : 'disconnected'}`}>
+              {isConnected ? '🟢 Подключено' : '🔴 Не подключено'}
+            </div>
           </div>
           {isPlaying && (
             <div className="timer" style={{ color: timeLeft <= 15 ? '#f44336' : '#333' }}>
