@@ -112,13 +112,105 @@
   border-radius: 10px;
 }
 
+/* Мобильная версия */
 @media (max-width: 768px) {
+  .home-page {
+    padding: 20px 10px;
+  }
+
   .title {
     font-size: 2em;
+    margin-bottom: 30px;
   }
-  
+
+  .teams-section {
+    padding: 20px 15px;
+    margin-bottom: 20px;
+  }
+
+  .teams-section h2 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+
+  .teams-list {
+    gap: 8px;
+  }
+
+  .team-item {
+    padding: 12px 15px;
+    font-size: 0.95em;
+    width: 100%;
+  }
+
+  .team-score {
+    font-size: 1.1em;
+  }
+
+  .games-section {
+    padding: 20px 15px;
+  }
+
+  .games-section h2 {
+    font-size: 1.3em;
+    margin-bottom: 20px;
+  }
+
   .games-grid {
     grid-template-columns: 1fr;
+    gap: 15px;
+  }
+
+  .game-card {
+    padding: 25px 20px;
+  }
+
+  .game-icon {
+    font-size: 3em;
+    margin-bottom: 12px;
+  }
+
+  .game-card h3 {
+    font-size: 1.5em;
+    margin-bottom: 8px;
+  }
+
+  .game-card p {
+    font-size: 1em;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .home-page {
+    padding: 15px 8px;
+  }
+
+  .title {
+    font-size: 1.6em;
+    margin-bottom: 20px;
+  }
+
+  .teams-section,
+  .games-section {
+    padding: 15px 10px;
+  }
+
+  .team-item {
+    padding: 10px 12px;
+    font-size: 0.9em;
+  }
+
+  .game-card {
+    padding: 20px 15px;
+  }
+
+  .game-icon {
+    font-size: 2.5em;
+  }
+
+  .game-card h3 {
+    font-size: 1.3em;
   }
 }
 

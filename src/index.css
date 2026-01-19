@@ -12,9 +12,31 @@ body {
   -moz-osx-font-smoothing: grayscale;
   background: linear-gradient(135deg, #667eea 0%, #764ba2 100%);
   min-height: 100vh;
+  /* Улучшение для мобильных */
+  -webkit-tap-highlight-color: transparent;
+  touch-action: manipulation;
 }
 
 #root {
   min-height: 100vh;
+}
+
+/* Улучшение для мобильных устройств */
+button, input, select, textarea {
+  -webkit-appearance: none;
+  -moz-appearance: none;
+  appearance: none;
+  font-size: 16px; /* Предотвращает зум на iOS */
+}
+
+input, textarea, select {
+  font-size: 16px; /* Предотвращает автоматический зум на iOS при фокусе */
+}
+
+/* Улучшение скролла на мобильных */
+@media (max-width: 768px) {
+  * {
+    -webkit-overflow-scrolling: touch;
+  }
 }
 

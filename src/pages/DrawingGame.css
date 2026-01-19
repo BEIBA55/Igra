@@ -698,40 +698,282 @@
   opacity: 0.9;
 }
 
+/* Мобильная версия */
 @media (max-width: 768px) {
-  .word-text {
-    font-size: 2.5em;
+  .drawing-game {
+    padding: 10px;
   }
-  
-  .guessing-teams {
-    grid-template-columns: 1fr;
+
+  .drawing-container {
+    padding: 20px 15px;
+    border-radius: 15px;
   }
-  
+
+  .drawing-header {
+    flex-direction: column;
+    align-items: stretch;
+    gap: 15px;
+    margin-bottom: 20px;
+  }
+
+  .back-btn {
+    width: 100%;
+    padding: 12px;
+    font-size: 1em;
+  }
+
+  .room-info h2 {
+    font-size: 1.3em;
+  }
+
+  .room-code {
+    font-size: 1.1em;
+    letter-spacing: 2px;
+    display: block;
+    margin-top: 5px;
+  }
+
+  .connection-status {
+    font-size: 0.85em;
+    margin-top: 8px;
+    display: block;
+  }
+
+  .timer {
+    font-size: 1.5em;
+    padding: 10px 20px;
+    width: 100%;
+    text-align: center;
+  }
+
+  /* Ведущий - мобильная версия */
+  .host-controls {
+    padding: 20px 10px;
+  }
+
+  .word-input-section {
+    padding: 20px 15px;
+  }
+
+  .word-input-section h3 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+
+  .word-input {
+    font-size: 1.1em;
+    padding: 15px;
+    margin-bottom: 15px;
+  }
+
+  .start-btn {
+    width: 100%;
+    font-size: 1.2em;
+    padding: 16px;
+  }
+
+  .current-word-display {
+    padding: 20px 15px;
+    margin-top: 15px;
+  }
+
+  .current-word-display h2 {
+    font-size: 2em;
+  }
+
   .word-card {
     padding: 30px 20px;
-    min-height: 250px;
+    min-height: 200px;
+    border-radius: 15px;
   }
-  
-  .action-buttons {
-    flex-direction: column;
+
+  .word-text {
+    font-size: 2.5em;
+    margin: 20px 0;
   }
-  
-  .action-buttons button {
-    width: 100%;
+
+  .word-hint {
+    font-size: 1.2em;
   }
-  
+
+  .answers-section {
+    margin-top: 20px;
+  }
+
+  .answers-section h3 {
+    font-size: 1.3em;
+    margin-bottom: 15px;
+  }
+
   .answer-item {
     flex-direction: column;
-    align-items: flex-start;
-    gap: 15px;
+    align-items: stretch;
+    gap: 12px;
+    padding: 15px;
   }
-  
-  .answer-actions {
+
+  .answer-content {
     width: 100%;
   }
-  
-  .answer-actions button {
+
+  .answer-team {
+    font-size: 1em;
+  }
+
+  .answer-text {
+    font-size: 1.1em;
+    word-break: break-word;
+  }
+
+  .answer-actions {
+    width: 100%;
+    display: flex;
+    gap: 10px;
+  }
+
+  .accept-btn, .reject-btn {
     flex: 1;
+    padding: 12px;
+    font-size: 0.95em;
+  }
+
+  .action-buttons {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .action-buttons button {
+    width: 100%;
+    padding: 14px;
+    font-size: 1em;
+  }
+
+  /* Игрок - мобильная версия */
+  .waiting-screen {
+    padding: 40px 15px;
+  }
+
+  .waiting-screen h2 {
+    font-size: 1.5em;
+    margin-bottom: 10px;
+  }
+
+  .waiting-screen p {
+    font-size: 1em;
+  }
+
+  .player-section {
+    padding: 20px 10px;
+  }
+
+  .drawing-prompt {
+    padding: 25px 15px;
+    margin-bottom: 20px;
+  }
+
+  .drawing-prompt h2 {
+    font-size: 1.5em;
+  }
+
+  .player-team-info {
+    font-size: 1em;
+    margin-top: 10px;
+  }
+
+  .answer-form {
+    padding: 20px 15px;
+    gap: 15px;
+  }
+
+  .answer-form label {
+    font-size: 1em;
+  }
+
+  .team-select, .answer-input {
+    padding: 14px;
+    font-size: 1.1em;
+    width: 100%;
+  }
+
+  .submit-btn {
+    width: 100%;
+    padding: 16px;
+    font-size: 1.2em;
+  }
+
+  .submitted-answer {
+    padding: 15px;
+    margin-top: 15px;
+  }
+
+  .submitted-answer p {
+    font-size: 1em;
+  }
+
+  /* Выбор команды */
+  .team-selection-screen {
+    padding: 30px 15px;
+  }
+
+  .team-selection-screen h2 {
+    font-size: 1.5em;
+    margin-bottom: 8px;
+  }
+
+  .team-selection-screen p {
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+
+  .teams-grid {
+    grid-template-columns: repeat(2, 1fr);
+    gap: 12px;
+  }
+
+  .team-select-btn {
+    padding: 18px 12px;
+    font-size: 1em;
+    min-height: 60px;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .drawing-game {
+    padding: 5px;
+  }
+
+  .drawing-container {
+    padding: 15px 10px;
+  }
+
+  .word-text {
+    font-size: 2em;
+  }
+
+  .teams-grid {
+    grid-template-columns: 1fr;
+  }
+
+  .team-select-btn {
+    padding: 20px;
+    font-size: 1.1em;
+  }
+
+  .room-code {
+    font-size: 1em;
+    letter-spacing: 1px;
+  }
+
+  .word-input {
+    font-size: 1em;
+  }
+
+  .current-word-display h2 {
+    font-size: 1.5em;
   }
 }
 

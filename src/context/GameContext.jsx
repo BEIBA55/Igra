@@ -6,7 +6,7 @@ export function useGame() {
   return useContext(GameContext)
 }
 
-// 10 команд по умолчанию
+// 12 команд по умолчанию
 const DEFAULT_TEAMS = [
   'Команда 1',
   'Команда 2',
@@ -17,7 +17,9 @@ const DEFAULT_TEAMS = [
   'Команда 7',
   'Команда 8',
   'Команда 9',
-  'Команда 10'
+  'Команда 10',
+  'Команда 11',
+  'Команда 12'
 ]
 
 export function GameProvider({ children }) {

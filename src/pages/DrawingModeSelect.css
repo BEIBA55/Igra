@@ -152,17 +152,106 @@
   background: #e0e0e0;
 }
 
+/* Мобильная версия */
 @media (max-width: 768px) {
-  .modes-grid {
-    grid-template-columns: 1fr;
+  .mode-select-page {
+    padding: 20px 10px;
   }
-  
-  .page-title {
-    font-size: 2em;
-  }
-  
+
   .mode-select-container {
     padding: 30px 20px;
+    border-radius: 15px;
+  }
+
+  .page-title {
+    font-size: 2em;
+    margin-bottom: 8px;
+  }
+
+  .page-subtitle {
+    font-size: 1em;
+    margin-bottom: 30px;
+  }
+
+  .modes-grid {
+    grid-template-columns: 1fr;
+    gap: 20px;
+    margin-bottom: 25px;
+  }
+
+  .mode-card {
+    padding: 30px 20px;
+  }
+
+  .mode-icon {
+    font-size: 3em;
+    margin-bottom: 15px;
+  }
+
+  .mode-card h2 {
+    font-size: 1.6em;
+    margin-bottom: 12px;
+  }
+
+  .mode-card p {
+    font-size: 1em;
+    margin-bottom: 20px;
+  }
+
+  .mode-btn {
+    padding: 14px 25px;
+    font-size: 1.1em;
+  }
+
+  .room-input {
+    font-size: 1.3em;
+    padding: 14px;
+    letter-spacing: 3px;
+  }
+
+  .back-home-btn {
+    padding: 14px;
+    font-size: 1em;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .mode-select-page {
+    padding: 15px 8px;
+  }
+
+  .mode-select-container {
+    padding: 25px 15px;
+  }
+
+  .page-title {
+    font-size: 1.6em;
+  }
+
+  .page-subtitle {
+    font-size: 0.95em;
+  }
+
+  .mode-card {
+    padding: 25px 15px;
+  }
+
+  .mode-icon {
+    font-size: 2.5em;
+  }
+
+  .mode-card h2 {
+    font-size: 1.4em;
+  }
+
+  .mode-card p {
+    font-size: 0.95em;
+  }
+
+  .room-input {
+    font-size: 1.1em;
+    letter-spacing: 2px;
   }
 }
 

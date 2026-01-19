@@ -51,12 +51,64 @@
   color: #667eea;
 }
 
+/* Мобильная версия */
 @media (max-width: 768px) {
   .scoreboard {
-    position: relative;
+    position: sticky;
     top: 0;
     right: 0;
-    margin-bottom: 20px;
+    left: 0;
+    margin-bottom: 15px;
+    border-radius: 12px;
+    padding: 15px;
+    z-index: 100;
+    box-shadow: 0 4px 12px rgba(0, 0, 0, 0.1);
+  }
+
+  .scoreboard h2 {
+    font-size: 1.2em;
+    margin-bottom: 12px;
+  }
+
+  .scoreboard-list {
+    gap: 8px;
+  }
+
+  .score-item {
+    padding: 10px 12px;
+  }
+
+  .team-name {
+    font-size: 1em;
+  }
+
+  .team-score {
+    font-size: 1.2em;
+  }
+}
+
+/* Очень маленькие экраны */
+@media (max-width: 480px) {
+  .scoreboard {
+    padding: 12px;
+    margin-bottom: 10px;
+  }
+
+  .scoreboard h2 {
+    font-size: 1.1em;
+    margin-bottom: 10px;
+  }
+
+  .score-item {
+    padding: 8px 10px;
+  }
+
+  .team-name {
+    font-size: 0.95em;
+  }
+
+  .team-score {
+    font-size: 1.1em;
   }
 }
 
